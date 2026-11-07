@@ -144,3 +144,18 @@ RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "")
 DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "onboarding@resend.dev")
 
 LOGIN_URL = 'login'
+
+# Inside settings.py (usually around line 28)
+
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+    ".vercel.app",
+    "student-attendance-management-system-using-django-l7t3vt0m5.vercel.app",
+]
+
+# Paste this right below ALLOWED_HOSTS so login and attendance forms work without CSRF errors:
+CSRF_TRUSTED_ORIGINS = [
+    "https://*.vercel.app",
+    "https://student-attendance-management-system-using-django-l7t3vt0m5.vercel.app",
+]
