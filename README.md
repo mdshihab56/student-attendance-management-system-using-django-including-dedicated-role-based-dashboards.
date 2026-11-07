@@ -50,6 +50,12 @@ Each role receives a dedicated dashboard and navigation relevant to its responsi
 ## Use Case Diagram
 <img width="2550" height="2079" alt="Student Attendance Management System - UML Use Case Diagram (A4 Printable)" src="https://github.com/user-attachments/assets/624196cf-8e91-46d1-aedc-9b2b661bbcf1" />
 
+## Create Account Panel
+<img width="1920" height="1080" alt="Screenshot (5160)" src="https://github.com/user-attachments/assets/0e17a464-7fe3-4cb4-a26c-f4b8ba9e0c12" />
+
+## Login
+<img width="1920" height="1080" alt="Screenshot (5161)" src="https://github.com/user-attachments/assets/64f61743-328e-4089-9da5-3fa1feeca06a" />
+ Panel
 
 ## How the System Works
 
