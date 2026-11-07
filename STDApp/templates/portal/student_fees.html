@@ -1,0 +1,32 @@
+{% extends "portal/base.html" %}
+{% block title %}My Fees{% endblock %}
+{% block content %}
+<div class="hero">
+  <small>Fees</small>
+  <h1>My Fees</h1>
+  <p>Fee, paid amount ও বকেয়া।</p>
+</div>
+
+<div class="stats three">
+  <div class="stat blue"><b>{{ total }}</b><span class="lbl">Total Fee</span></div>
+  <div class="stat green"><b>{{ paid }}</b><span class="lbl">Paid</span></div>
+  <div class="stat red"><b>{{ due }}</b><span class="lbl">Due</span></div>
+</div>
+
+{% for f in fees %}
+<div class="item">
+  <div class="head">
+    <div>
+      <h3>Semester {{ f.semester }}</h3>
+      <div class="muted">Fee {{ f.amount }} · Paid {{ f.paid_amount }} · Due {{ f.due_amount }}</div>
+      {% if f.due_date %}<div class="muted">Due date: {{ f.due_date|date:"d M Y" }}</div>{% endif %}
+    </div>
+    <div style="text-align:right">
+      <span class="badge {% if f.payment_status == 'Paid' %}b-green{% elif f.payment_status == 'Partial' %}b-amber{% else %}b-red{% endif %}">{{ f.payment_status }}</span>
+      {% if f.overdue %}<div style="margin-top:6px"><span class="badge b-red">Overdue</span></div>{% endif %}
+    </div>
+  </div>
+  <div class="bar" style="margin-top:12px"><i style="width:{{ f.percent }}%"></i></div>
+</div>
+{% empty %}<div class="empty">No fee records.</div>{% endfor %}
+{% endblock %}

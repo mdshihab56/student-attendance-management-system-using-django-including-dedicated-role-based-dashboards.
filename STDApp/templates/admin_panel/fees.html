@@ -1,0 +1,75 @@
+{% extends "admin_panel/base.html" %}
+{% block title %}Fees & Due Fines{% endblock %}
+{% block content %}
+<div class="hero">
+  <small>Finance</small>
+  <h1>Fees & Due Fines</h1>
+  <p>Fee, paid amount ও বকেয়া হিসাব।</p>
+</div>
+
+<div class="stats three">
+  <div class="stat blue"><b>{{ total }}</b><span class="lbl">Total Fee</span></div>
+  <div class="stat green"><b>{{ paid }}</b><span class="lbl">Paid</span></div>
+  <div class="stat red"><b>{{ due }}</b><span class="lbl">Due</span></div>
+</div>
+
+<details class="add">
+  <summary>Add Fee Record</summary>
+  <form method="post">{% csrf_token %}
+    <input type="hidden" name="action" value="add_fee">
+    <div class="form-grid">
+      <div><label>Student</label>
+        <select name="student" required>
+          <option value="">Select</option>
+          {% for s in students %}<option value="{{ s.pk }}">{{ s.student_id }} — {{ s.user.get_full_name|default:s.user.username }}</option>{% endfor %}
+        </select></div>
+      <div><label>Semester</label><input type="number" min="1" name="semester" required></div>
+      <div><label>Amount</label><input type="number" step="0.01" min="0" name="amount" required></div>
+      <div><label>Paid amount</label><input type="number" step="0.01" min="0" name="paid_amount" value="0"></div>
+      <div><label>Due date</label><input type="date" name="due_date"></div>
+    </div>
+    <button class="btn">Save</button>
+  </form>
+</details>
+
+<form method="get" class="filters" style="margin-bottom:14px">
+  <div><label>Search</label><input name="q" value="{{ q }}" placeholder="Student ID or username"></div>
+  <div><label>Status</label>
+    <select name="status" onchange="this.form.submit()">
+      <option value="">All</option>
+      <option value="Paid" {% if status == 'Paid' %}selected{% endif %}>Paid</option>
+      <option value="Partial" {% if status == 'Partial' %}selected{% endif %}>Partial</option>
+      <option value="Unpaid" {% if status == 'Unpaid' %}selected{% endif %}>Unpaid</option>
+    </select></div>
+</form>
+
+{% for f in fees %}
+<div class="item">
+  <div class="head">
+    <div>
+      <h3>{{ f.student.student_id }} · Semester {{ f.semester }}</h3>
+      <div class="muted">{{ f.student.user.get_full_name|default:f.student.user.username }} · {{ f.student.department.code }}</div>
+      <div class="muted">Fee {{ f.amount }} · Paid {{ f.paid_amount }} · Due {{ f.due_amount }}{% if f.due_date %} · Due on {{ f.due_date|date:"d M Y" }}{% endif %}</div>
+    </div>
+    <div style="text-align:right">
+      <span class="badge {% if f.payment_status == 'Paid' %}b-green{% elif f.payment_status == 'Partial' %}b-amber{% else %}b-red{% endif %}">{{ f.payment_status }}</span>
+      {% if f.overdue %}<div style="margin-top:6px"><span class="badge b-red">Overdue</span></div>{% endif %}
+    </div>
+  </div>
+  <div class="bar" style="margin-top:12px"><i style="width:{{ f.percent }}%"></i></div>
+  <div class="actions">
+    {% if f.due_amount > 0 %}
+    <form method="post" style="display:flex;gap:8px">{% csrf_token %}
+      <input type="hidden" name="action" value="pay"><input type="hidden" name="id" value="{{ f.pk }}">
+      <input type="number" step="0.01" min="0.01" name="amount" placeholder="Payment" style="width:120px;padding:6px 10px" required>
+      <button class="btn-sm">Record payment</button>
+    </form>
+    {% endif %}
+    <form method="post" onsubmit="return confirm('Delete fee record?')">{% csrf_token %}
+      <input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="{{ f.pk }}">
+      <button class="btn-sm btn-danger">Delete</button>
+    </form>
+  </div>
+</div>
+{% empty %}<div class="empty">No fee records.</div>{% endfor %}
+{% endblock %}

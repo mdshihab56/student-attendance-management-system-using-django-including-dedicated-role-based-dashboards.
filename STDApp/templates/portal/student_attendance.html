@@ -1,0 +1,37 @@
+{% extends "portal/base.html" %}
+{% block title %}My Attendance{% endblock %}
+{% block content %}
+<div class="hero">
+  <small>Attendance</small>
+  <h1>My Attendance</h1>
+  <p>Course অনুযায়ী present, late ও absent।</p>
+</div>
+
+{% for r in rows %}
+<div class="item">
+  <div class="head">
+    <div>
+      <h3>{{ r.assignment.Courses.code }} — {{ r.assignment.Courses.Cname }}</h3>
+      <div class="muted">Present {{ r.present }} · Late {{ r.late }} · Absent {{ r.absent }} · Total {{ r.total }}</div>
+    </div>
+    <span class="badge {% if r.total == 0 %}b-blue{% elif r.low %}b-red{% else %}b-green{% endif %}">{% if r.total == 0 %}No data{% else %}{{ r.pct }}%{% endif %}</span>
+  </div>
+  <div class="bar {% if r.low %}bad{% endif %}" style="margin-top:12px"><i style="width:{{ r.pct }}%"></i></div>
+  {% if r.low %}<div class="muted" style="margin-top:8px;color:#ff9a9a">Below {{ low_limit }}% — attendance low.</div>{% endif %}
+</div>
+{% empty %}<div class="empty">No courses yet.</div>{% endfor %}
+
+<div class="panel">
+  <h2>Recent Records</h2>
+  <div class="scroll"><table>
+    <tr><th>Date</th><th>Course</th><th>Status</th></tr>
+    {% for r in recent %}
+    <tr>
+      <td>{{ r.date|date:"d M Y" }}</td>
+      <td>{{ r.course_assignment.Courses.code }}</td>
+      <td><span class="badge {% if r.status == 'present' %}b-green{% elif r.status == 'late' %}b-amber{% else %}b-red{% endif %}">{{ r.get_status_display }}</span></td>
+    </tr>
+    {% empty %}<tr><td colspan="3" class="empty">No records yet.</td></tr>{% endfor %}
+  </table></div>
+</div>
+{% endblock %}

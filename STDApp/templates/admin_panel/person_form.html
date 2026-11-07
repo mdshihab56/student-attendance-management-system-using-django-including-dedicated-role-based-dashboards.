@@ -1,0 +1,36 @@
+{% extends "admin_panel/base.html" %}
+{% block title %}{% if obj %}Edit{% else %}Add{% endif %} {{ kind|title }}{% endblock %}
+{% block content %}
+<div class="hero">
+  <small>{{ kind }}</small>
+  <h1>{% if obj %}Edit{% else %}Add New{% endif %} {{ kind|title }}</h1>
+  <p>Account ও academic information দিন।</p>
+</div>
+
+<form method="post" class="panel">
+  {% csrf_token %}
+  <div class="form-grid">
+    <div><label>Username *</label><input name="username" value="{{ v.username|default:'' }}" required></div>
+    <div><label>Password {% if obj %}(leave blank to keep){% else %}*{% endif %}</label><input type="password" name="password" {% if not obj %}required{% endif %}></div>
+    <div><label>First name</label><input name="first_name" value="{{ v.first_name|default:'' }}"></div>
+    <div><label>Last name</label><input name="last_name" value="{{ v.last_name|default:'' }}"></div>
+    <div><label>Email</label><input type="email" name="email" value="{{ v.email|default:'' }}"></div>
+    <div><label>Phone</label><input name="phone" value="{{ v.phone|default:'' }}"></div>
+    <div>
+      <label>Department *</label>
+      <select name="department" required>
+        <option value="">Select</option>
+        {% for d in departments %}<option value="{{ d.pk }}" {% if v.department == d.pk|stringformat:"s" %}selected{% endif %}>{{ d.code }} - {{ d.name }}</option>{% endfor %}
+      </select>
+    </div>
+    {% if is_student %}
+    <div><label>Student ID *</label><input name="student_id" value="{{ v.student_id|default:'' }}" required></div>
+    <div><label>Semester</label><input type="number" min="1" max="12" name="semester" value="{{ v.semester|default:1 }}"></div>
+    {% endif %}
+  </div>
+  <div class="actions">
+    <button class="btn" type="submit">Save</button>
+    <a class="btn-sm" style="padding:11px 18px" href="{% url back %}">Cancel</a>
+  </div>
+</form>
+{% endblock %}

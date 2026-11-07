@@ -1,0 +1,37 @@
+{% extends "admin_panel/base.html" %}
+{% block title %}Course Plans & Syllabus{% endblock %}
+{% block content %}
+<div class="hero">
+  <small>Curriculum</small>
+  <h1>Course Plans & Syllabus</h1>
+  <p>Syllabus ও course outline overview।</p>
+</div>
+
+<form method="get" class="filters" style="margin-bottom:14px">
+  <div><label>Search</label><input name="q" value="{{ q }}" placeholder="Course code or title"></div>
+  <div><label>Department</label>
+    <select name="department" onchange="this.form.submit()">
+      <option value="">All</option>
+      {% for d in departments %}<option value="{{ d.pk }}" {% if dept == d.pk|stringformat:"s" %}selected{% endif %}>{{ d.code }}</option>{% endfor %}
+    </select></div>
+</form>
+
+{% for c in courses %}
+<div class="item">
+  <div class="head">
+    <div>
+      <h3>{{ c.code }} — {{ c.Cname }}</h3>
+      <div class="muted">{{ c.department.name }} · {{ c.credit }} credit</div>
+    </div>
+    <span class="badge b-blue">{{ c.credit }} cr</span>
+  </div>
+  <div style="margin-top:10px">
+    {% for a in c.courseassignment_set.all %}
+      <div class="sub"><span>{{ a.faculties }}{% if a.Semester %} · Sem {{ a.Semester }}{% endif %}{% if a.session %} · {{ a.session }}{% endif %}</span></div>
+    {% empty %}
+      <div class="muted">No teacher assigned yet.</div>
+    {% endfor %}
+  </div>
+</div>
+{% empty %}<div class="empty">No courses found.</div>{% endfor %}
+{% endblock %}

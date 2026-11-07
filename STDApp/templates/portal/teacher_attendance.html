@@ -1,0 +1,55 @@
+{% extends "portal/base.html" %}
+{% block title %}Take Attendance{% endblock %}
+{% block content %}
+<div class="hero">
+  <small>Attendance</small>
+  <h1>Take Attendance</h1>
+  <p>Course ও তারিখ বেছে student-দের attendance দিন।</p>
+</div>
+
+<form method="get" class="panel">
+  <div class="form-grid">
+    <div>
+      <label>Course</label>
+      <select name="assignment" required>
+        <option value="">Select</option>
+        {% for a in assignments %}<option value="{{ a.pk }}" {% if assignment_id == a.pk|stringformat:"s" %}selected{% endif %}>{{ a.Courses.code }} — {{ a.Courses.Cname }}</option>{% endfor %}
+      </select>
+    </div>
+    <div><label>Date</label><input type="date" name="date" value="{{ the_date|date:'Y-m-d' }}"></div>
+  </div>
+  <button class="btn">Load Students</button>
+</form>
+
+{% if assignment %}
+<div class="stats three">
+  <div class="stat green"><b>{{ summary.present }}</b><span class="lbl">Present</span></div>
+  <div class="stat amber"><b>{{ summary.late }}</b><span class="lbl">Late</span></div>
+  <div class="stat red"><b>{{ summary.absent }}</b><span class="lbl">Absent</span></div>
+</div>
+
+<form method="post" class="panel">
+  {% csrf_token %}
+  <input type="hidden" name="assignment" value="{{ assignment.pk }}">
+  <input type="hidden" name="date" value="{{ the_date|date:'Y-m-d' }}">
+  <h2>{{ assignment.Courses.code }} · {{ the_date|date:"d M Y" }}</h2>
+  {% for r in rows %}
+  <div class="arow">
+    <div class="top">
+      <div><b>{{ r.student.user.get_full_name|default:r.student.user.username }}</b>
+        <div class="muted">{{ r.student.student_id }}{% if r.saved %} · saved{% endif %}</div></div>
+      <div class="pills">
+        <label class="pill"><input type="radio" name="status_{{ r.student.pk }}" value="present" {% if r.status == 'present' %}checked{% endif %}><span class="p">Present</span></label>
+        <label class="pill"><input type="radio" name="status_{{ r.student.pk }}" value="late" {% if r.status == 'late' %}checked{% endif %}><span class="l">Late</span></label>
+        <label class="pill"><input type="radio" name="status_{{ r.student.pk }}" value="absent" {% if r.status == 'absent' %}checked{% endif %}><span class="a">Absent</span></label>
+      </div>
+    </div>
+    <input name="remarks_{{ r.student.pk }}" value="{{ r.remarks }}" placeholder="Remarks (optional)" maxlength="200">
+  </div>
+  {% empty %}
+  <div class="empty">No students match this course's department/semester.</div>
+  {% endfor %}
+  {% if rows %}<button class="btn" style="margin-top:14px">Save Attendance</button>{% endif %}
+</form>
+{% endif %}
+{% endblock %}

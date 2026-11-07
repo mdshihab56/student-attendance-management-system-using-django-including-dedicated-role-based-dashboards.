@@ -1,0 +1,33 @@
+{% extends "portal/base.html" %}
+{% block title %}Attendance Report{% endblock %}
+{% block content %}
+<div class="hero">
+  <small>Report</small>
+  <h1>Attendance Report</h1>
+  <p>Course অনুযায়ী প্রতিটি student-এর attendance %।</p>
+</div>
+
+<form method="get" class="panel">
+  <label>Course</label>
+  <select name="assignment" onchange="this.form.submit()" required>
+    <option value="">Select</option>
+    {% for a in assignments %}<option value="{{ a.pk }}" {% if assignment_id == a.pk|stringformat:"s" %}selected{% endif %}>{{ a.Courses.code }} — {{ a.Courses.Cname }}</option>{% endfor %}
+  </select>
+</form>
+
+{% if assignment %}
+<div class="panel">
+  <h2>{{ assignment.Courses.code }} — {{ assignment.Courses.Cname }}</h2>
+  {% for r in rows %}
+  <div class="arow">
+    <div class="top">
+      <span><b>{{ r.student.user.get_full_name|default:r.student.user.username }}</b> <span class="muted">{{ r.student.student_id }}</span></span>
+      <span class="badge {% if r.total == 0 %}b-blue{% elif r.low %}b-red{% else %}b-green{% endif %}">{% if r.total == 0 %}No data{% else %}{{ r.pct }}% · {{ r.total }} class{{ r.total|pluralize:",es" }}{% endif %}</span>
+    </div>
+    <div class="bar {% if r.low %}bad{% endif %}"><i style="width:{{ r.pct }}%"></i></div>
+  </div>
+  {% empty %}<div class="empty">No students found.</div>{% endfor %}
+  <p class="muted" style="margin-bottom:0">Red = below {{ low_limit }}%</p>
+</div>
+{% endif %}
+{% endblock %}
