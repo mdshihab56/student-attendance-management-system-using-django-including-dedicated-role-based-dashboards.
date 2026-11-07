@@ -1,0 +1,44 @@
+{% extends "admin_panel/base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="hero row">
+  <div class="hico"><span class="material-symbols-rounded">school</span></div>
+  <div>
+    <h1 style="font-size:24px;margin:0 0 4px">Admin Dashboard</h1>
+    <p>Class Attendance &amp; Academic Management System</p>
+  </div>
+</div>
+
+<div class="stats">
+  <a class="stat blue" href="{% url 'panel_students' %}"><span class="ico"><span class="material-symbols-rounded">groups</span></span><b>{{ total_students }}</b><span class="lbl">Total Students</span></a>
+  <a class="stat green" href="{% url 'panel_teachers' %}"><span class="ico"><span class="material-symbols-rounded">co_present</span></span><b>{{ total_teachers }}</b><span class="lbl">Total Teachers</span></a>
+  <a class="stat purple" href="{% url 'panel_courses' %}"><span class="ico"><span class="material-symbols-rounded">menu_book</span></span><b>{{ total_courses }}</b><span class="lbl">Total Courses</span></a>
+  <a class="stat amber" href="{% url 'panel_courses' %}"><span class="ico"><span class="material-symbols-rounded">domain</span></span><b>{{ total_departments }}</b><span class="lbl">Departments</span></a>
+</div>
+
+<div class="panel">
+  <h2>Today's Attendance</h2>
+  <div class="barrow">
+    <div class="bar"><i style="width:{{ attendance_pct }}%"></i></div>
+    <strong>{{ attendance_pct }}%</strong>
+  </div>
+  <div class="chips">
+    <span class="chip">Present: {{ att_present }}</span>
+    <span class="chip">Late: {{ att_late }}</span>
+    <span class="chip">Absent: {{ att_absent }}</span>
+    <span class="chip">{{ today|date:"d M Y" }}</span>
+  </div>
+</div>
+
+<div class="panel menu">
+  <a href="{% url 'panel_students' %}"><span class="mi"><span class="material-symbols-rounded">groups</span></span><div><b>Manage Students</b><span class="d">Student profiles and account information</span></div></a>
+  <a href="{% url 'panel_teachers' %}"><span class="mi"><span class="material-symbols-rounded">co_present</span></span><div><b>Manage Teachers</b><span class="d">Teacher accounts and information</span></div></a>
+  <a href="{% url 'panel_courses' %}"><span class="mi"><span class="material-symbols-rounded">menu_book</span></span><div><b>Courses & Departments</b><span class="d">Create and manage courses</span></div></a>
+  <a href="{% url 'panel_assignments' %}"><span class="mi"><span class="material-symbols-rounded">event_note</span></span><div><b>Assign Courses & Schedule</b><span class="d">Assign teachers and manage class routines</span></div></a>
+  <a href="{% url 'panel_attendance' %}"><span class="mi"><span class="material-symbols-rounded">task_alt</span></span><div><b>Attendance Management</b><span class="d">View and update attendance records</span></div></a>
+  <a href="{% url 'panel_fees' %}"><span class="mi"><span class="material-symbols-rounded">payments</span></span><div><b>Fees & Due Fines</b><span class="d">Fee, paid amount, and outstanding balance</span></div></a>
+  <a href="{% url 'panel_routines' %}"><span class="mi"><span class="material-symbols-rounded">calendar_month</span></span><div><b>Class & Exam Routine</b><span class="d">Class and exam schedules</span></div></a>
+  <a href="{% url 'panel_course_plans' %}"><span class="mi"><span class="material-symbols-rounded">edit_note</span></span><div><b>Course Plans & Syllabus</b><span class="d">Syllabus and course outline</span></div></a>
+  <a href="{% url 'panel_reports' %}"><span class="mi"><span class="material-symbols-rounded">monitoring</span></span><div><b>Institutional Reports</b><span class="d">Attendance, fee, and department reports</span></div></a>
+</div>
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends "admin_panel/base.html" %}
+{% block title %}Courses & Departments{% endblock %}
+{% block content %}
+<div class="hero">
+  <small>Academics</small>
+  <h1>Courses & Departments</h1>
+  <p>Create and manage courses and departments.</p>
+</div>
+
+<div class="stats three">
+  <div class="stat purple"><span class="ico"><span class="material-symbols-rounded">menu_book</span></span><b>{{ courses|length }}</b><span class="lbl">Courses</span></div>
+  <div class="stat amber"><span class="ico"><span class="material-symbols-rounded">domain</span></span><b>{{ departments|length }}</b><span class="lbl">Departments</span></div>
+  <div class="stat blue"><span class="ico"><span class="material-symbols-rounded">stars</span></span><b>{{ total_credits }}</b><span class="lbl">Total Credits</span></div>
+</div>
+
+<details class="add">
+  <summary>Add Department</summary>
+  <form method="post">{% csrf_token %}
+    <input type="hidden" name="action" value="add_department">
+    <div class="form-grid">
+      <div><label>Name</label><input name="name" required></div>
+      <div><label>Code</label><input name="code" required></div>
+    </div>
+    <button class="btn">Save Department</button>
+  </form>
+</details>
+
+<details class="add">
+  <summary>Add Course</summary>
+  <form method="post">{% csrf_token %}
+    <input type="hidden" name="action" value="add_course">
+    <div class="form-grid">
+      <div><label>Course title</label><input name="Cname" required></div>
+      <div><label>Code</label><input name="code" required></div>
+      <div><label>Credit</label><input type="number" step="0.5" min="0.5" name="credit" value="3"></div>
+      <div>
+        <label>Department</label>
+        <select name="department" required>
+          <option value="">Select</option>
+          {% for d in departments %}<option value="{{ d.pk }}">{{ d.code }} - {{ d.name }}</option>{% endfor %}
+        </select>
+      </div>
+    </div>
+    <button class="btn">Save Course</button>
+  </form>
+</details>
+
+<div class="panel">
+  <h2>Departments</h2>
+  {% for d in departments %}
+  <div class="arow">
+    <div class="top">
+      <div><b>{{ d.code }}</b> — {{ d.name }}<div class="muted">{{ d.n_students }} students · {{ d.n_courses }} courses</div></div>
+      <form method="post" onsubmit="return confirm('Delete department?')">{% csrf_token %}
+        <input type="hidden" name="action" value="delete_department"><input type="hidden" name="id" value="{{ d.pk }}">
+        <button class="btn-sm btn-danger">Delete</button>
+      </form>
+    </div>
+  </div>
+  {% empty %}<div class="empty">No departments yet.</div>{% endfor %}
+</div>
+
+<form method="get" style="margin-bottom:14px">
+  <label>Search courses</label>
+  <input type="text" name="q" value="{{ q }}" placeholder="Course code or title...">
+</form>
+
+{% for c in courses %}
+<div class="item">
+  <div class="head">
+    <div>
+      <h3>{{ c.code }} — {{ c.Cname }}</h3>
+      <div class="muted">{{ c.department.name }} · {{ c.credit }} credit</div>
+    </div>
+    <form method="post" onsubmit="return confirm('Delete course?')">{% csrf_token %}
+      <input type="hidden" name="action" value="delete_course"><input type="hidden" name="id" value="{{ c.pk }}">
+      <button class="btn-sm btn-danger">Delete</button>
+    </form>
+  </div>
+</div>
+{% empty %}<div class="empty">No courses found.</div>{% endfor %}
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends "admin_panel/base.html" %}
+{% block title %}Assign Courses & Schedule{% endblock %}
+{% block content %}
+<div class="hero">
+  <small>Teaching</small>
+  <h1>Assign Courses & Schedule</h1>
+  <p>Assign teachers and manage class routines.</p>
+</div>
+
+<details class="add">
+  <summary>Assign Course to Teacher</summary>
+  <form method="post">{% csrf_token %}
+    <input type="hidden" name="action" value="add_assignment">
+    <div class="form-grid">
+      <div>
+        <label>Teacher</label>
+        <select name="faculty" required>
+          <option value="">Select</option>
+          {% for t in teachers %}<option value="{{ t.pk }}">{{ t.user.get_full_name|default:t.user.username }}</option>{% endfor %}
+        </select>
+      </div>
+      <div>
+        <label>Course</label>
+        <select name="course" required>
+          <option value="">Select</option>
+          {% for c in courses %}<option value="{{ c.pk }}">{{ c.code }} - {{ c.Cname }}</option>{% endfor %}
+        </select>
+      </div>
+      <div><label>Semester (number)</label><input name="semester" placeholder="e.g. 1"></div>
+      <div><label>Session</label><input name="session" placeholder="e.g. 2026-27"></div>
+    </div>
+    <button class="btn">Assign</button>
+  </form>
+</details>
+
+{% for a in assignments %}
+<div class="item">
+  <div class="head">
+    <div>
+      <h3>{{ a.Courses.code }} — {{ a.Courses.Cname }}</h3>
+      <div class="muted">{{ a.faculties }} · {{ a.Courses.department.code }}{% if a.Semester %} · Sem {{ a.Semester }}{% endif %}{% if a.session %} · {{ a.session }}{% endif %}</div>
+    </div>
+    <form method="post" onsubmit="return confirm('Delete this assignment?')">{% csrf_token %}
+      <input type="hidden" name="action" value="delete_assignment"><input type="hidden" name="id" value="{{ a.pk }}">
+      <button class="btn-sm btn-danger">Delete</button>
+    </form>
+  </div>
+
+  {% for s in a.schedules.all %}
+  <div class="sub">
+    <span>{{ s.day }} · {{ s.start_time|time:"h:i A" }} – {{ s.end_time|time:"h:i A" }}{% if s.room %} · Room {{ s.room }}{% endif %}</span>
+    <form method="post">{% csrf_token %}
+      <input type="hidden" name="action" value="delete_schedule"><input type="hidden" name="id" value="{{ s.pk }}">
+      <button class="btn-sm btn-danger"><span class="material-symbols-rounded">close</span></button>
+    </form>
+  </div>
+  {% endfor %}
+
+  <details class="add" style="margin:12px 0 0">
+    <summary>Add class time</summary>
+    <form method="post">{% csrf_token %}
+      <input type="hidden" name="action" value="add_schedule"><input type="hidden" name="assignment" value="{{ a.pk }}">
+      <div class="form-grid">
+        <div><label>Day</label>
+          <select name="day">{% for val, label in days %}<option value="{{ val }}">{{ label }}</option>{% endfor %}</select></div>
+        <div><label>Start</label><input type="time" name="start_time" required></div>
+        <div><label>End</label><input type="time" name="end_time" required></div>
+        <div><label>Room</label><input name="room"></div>
+      </div>
+      <button class="btn">Add</button>
+    </form>
+  </details>
+</div>
+{% empty %}<div class="empty">No course assignments yet.</div>{% endfor %}
+{% endblock %}

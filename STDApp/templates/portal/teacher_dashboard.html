@@ -1,0 +1,36 @@
+{% extends "portal/base.html" %}
+{% block title %}Teacher Dashboard{% endblock %}
+{% block content %}
+<div class="hero row">
+  <div class="hico"><span class="material-symbols-rounded">co_present</span></div>
+  <div>
+    <h1 style="font-size:24px;margin:0 0 4px">Welcome, {{ teacher.user.get_full_name|default:teacher.user.username }}</h1>
+    <p>{{ teacher.department.name }}</p>
+  </div>
+</div>
+
+<div class="stats">
+  <a class="stat purple" href="{% url 'teacher_courses' %}"><span class="ico"><span class="material-symbols-rounded">menu_book</span></span><b>{{ course_count }}</b><span class="lbl">My Courses</span></a>
+  <a class="stat blue" href="{% url 'teacher_report' %}"><span class="ico"><span class="material-symbols-rounded">groups</span></span><b>{{ student_count }}</b><span class="lbl">My Students</span></a>
+  <a class="stat green" href="{% url 'teacher_attendance' %}"><span class="ico"><span class="material-symbols-rounded">task_alt</span></span><b>{{ marked_today }}</b><span class="lbl">Marked Today</span></a>
+  <a class="stat amber" href="{% url 'teacher_routine' %}"><span class="ico"><span class="material-symbols-rounded">edit_note</span></span><b>{{ upcoming_exams }}</b><span class="lbl">Upcoming Exams</span></a>
+</div>
+
+<div class="panel">
+  <h2>Today's Classes · {{ today|date:"l, d M" }}</h2>
+  {% for s in todays_classes %}
+  <div class="sub">
+    <span><b>{{ s.course_assignment.Courses.code }}</b> {{ s.course_assignment.Courses.Cname }}<br>
+      <span class="muted">{{ s.start_time|time:"h:i A" }} – {{ s.end_time|time:"h:i A" }}{% if s.room %} · Room {{ s.room }}{% endif %}</span></span>
+    <a class="btn-sm" href="{% url 'teacher_attendance' %}?assignment={{ s.course_assignment.pk }}">Take attendance</a>
+  </div>
+  {% empty %}<div class="empty">No classes today.</div>{% endfor %}
+</div>
+
+<div class="panel menu">
+  <a href="{% url 'teacher_courses' %}"><span class="mi"><span class="material-symbols-rounded">menu_book</span></span><div><b>My Courses</b><span class="d">My courses and class schedule</span></div></a>
+  <a href="{% url 'teacher_attendance' %}"><span class="mi"><span class="material-symbols-rounded">task_alt</span></span><div><b>Take Attendance</b><span class="d">Record and update attendance</span></div></a>
+  <a href="{% url 'teacher_report' %}"><span class="mi"><span class="material-symbols-rounded">monitoring</span></span><div><b>Attendance Report</b><span class="d">Attendance percentage by student</span></div></a>
+  <a href="{% url 'teacher_routine' %}"><span class="mi"><span class="material-symbols-rounded">calendar_month</span></span><div><b>Class & Exam Routine</b><span class="d">Class and exam schedules</span></div></a>
+</div>
+{% endblock %}

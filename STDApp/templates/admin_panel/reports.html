@@ -1,0 +1,60 @@
+{% extends "admin_panel/base.html" %}
+{% block title %}Institutional Reports{% endblock %}
+{% block content %}
+<div class="hero">
+  <small>Reports</small>
+  <h1>Institutional Reports</h1>
+  <p>Attendance, fee, and department summaries.</p>
+</div>
+
+<div class="stats three">
+  <div class="stat green"><b>{{ att_present }}</b><span class="lbl">Present</span></div>
+  <div class="stat amber"><b>{{ att_late }}</b><span class="lbl">Late</span></div>
+  <div class="stat red"><b>{{ att_absent }}</b><span class="lbl">Absent</span></div>
+</div>
+
+<div class="panel">
+  <h2>Overall Attendance ({{ att_total }} records)</h2>
+  <div class="barrow"><div class="bar"><i style="width:{{ att_pct }}%"></i></div><strong>{{ att_pct }}%</strong></div>
+</div>
+
+<div class="panel">
+  <h2>Fee Collection</h2>
+  <div class="barrow"><div class="bar"><i style="width:{{ fee_pct }}%"></i></div><strong>{{ fee_pct }}%</strong></div>
+  <div class="chips">
+    <span class="chip">Total {{ fee_total }}</span>
+    <span class="chip">Paid {{ fee_paid }}</span>
+    <span class="chip">Due {{ fee_due }}</span>
+  </div>
+</div>
+
+<div class="panel">
+  <h2>Attendance by Course</h2>
+  {% for c in per_course %}
+  <div class="arow">
+    <div class="top"><span><b>{{ c.code }}</b> <span class="muted">{{ c.name }}</span></span><span>{{ c.pct }}%</span></div>
+    <div class="bar {% if c.pct < low_limit %}bad{% endif %}"><i style="width:{{ c.pct }}%"></i></div>
+  </div>
+  {% empty %}<div class="empty">No attendance data yet.</div>{% endfor %}
+</div>
+
+<div class="panel">
+  <h2>Low Attendance (below {{ low_limit }}%)</h2>
+  <div class="scroll"><table>
+    <tr><th>ID</th><th>Name</th><th>Classes</th><th>%</th></tr>
+    {% for s in low %}
+    <tr><td>{{ s.sid }}</td><td>{{ s.name }}</td><td>{{ s.total }}</td><td><span class="badge b-red">{{ s.pct }}%</span></td></tr>
+    {% empty %}<tr><td colspan="4" class="empty">Everyone is above the limit.</td></tr>{% endfor %}
+  </table></div>
+</div>
+
+<div class="panel">
+  <h2>Departments</h2>
+  <div class="scroll"><table>
+    <tr><th>Dept</th><th>Students</th><th>Teachers</th><th>Courses</th></tr>
+    {% for d in departments %}
+    <tr><td>{{ d.code }}</td><td>{{ d.n_students }}</td><td>{{ d.n_teachers }}</td><td>{{ d.n_courses }}</td></tr>
+    {% endfor %}
+  </table></div>
+</div>
+{% endblock %}

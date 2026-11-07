@@ -1,0 +1,44 @@
+{% extends "portal/base.html" %}
+{% block title %}Student Dashboard{% endblock %}
+{% block content %}
+<div class="hero row">
+  <div class="hico"><span class="material-symbols-rounded">school</span></div>
+  <div>
+    <h1 style="font-size:24px;margin:0 0 4px">Welcome, {{ student.user.get_full_name|default:student.user.username }}</h1>
+    <p>ID {{ student.student_id }} · {{ student.department.code }} · Semester {{ student.semester }}</p>
+  </div>
+</div>
+
+<div class="stats">
+  <a class="stat purple" href="{% url 'student_courses' %}"><span class="ico"><span class="material-symbols-rounded">menu_book</span></span><b>{{ course_count }}</b><span class="lbl">My Courses</span></a>
+  <a class="stat green" href="{% url 'student_attendance' %}"><span class="ico"><span class="material-symbols-rounded">task_alt</span></span><b>{{ attendance_pct }}%</b><span class="lbl">Attendance</span></a>
+  <a class="stat red" href="{% url 'student_fees' %}"><span class="ico"><span class="material-symbols-rounded">payments</span></span><b>{{ due }}</b><span class="lbl">Fee Due</span></a>
+  <a class="stat amber" href="{% url 'student_routine' %}"><span class="ico"><span class="material-symbols-rounded">edit_note</span></span><b>{{ upcoming_exams }}</b><span class="lbl">Upcoming Exams</span></a>
+</div>
+
+<div class="panel">
+  <h2>Overall Attendance</h2>
+  <div class="barrow">
+    <div class="bar {% if att_total and attendance_pct < 75 %}bad{% endif %}"><i style="width:{{ attendance_pct }}%"></i></div>
+    <strong>{{ attendance_pct }}%</strong>
+  </div>
+  <div class="muted" style="margin-top:8px">{{ att_total }} class record{{ att_total|pluralize }}</div>
+</div>
+
+<div class="panel">
+  <h2>Today's Classes · {{ today|date:"l, d M" }}</h2>
+  {% for s in todays_classes %}
+  <div class="sub">
+    <span><b>{{ s.course_assignment.Courses.code }}</b> {{ s.course_assignment.Courses.Cname }}<br>
+      <span class="muted">{{ s.start_time|time:"h:i A" }} – {{ s.end_time|time:"h:i A" }}{% if s.room %} · Room {{ s.room }}{% endif %} · {{ s.course_assignment.faculties }}</span></span>
+  </div>
+  {% empty %}<div class="empty">No classes today.</div>{% endfor %}
+</div>
+
+<div class="panel menu">
+  <a href="{% url 'student_courses' %}"><span class="mi"><span class="material-symbols-rounded">menu_book</span></span><div><b>My Courses</b><span class="d">List of courses and teachers</span></div></a>
+  <a href="{% url 'student_attendance' %}"><span class="mi"><span class="material-symbols-rounded">task_alt</span></span><div><b>My Attendance</b><span class="d">Attendance by course</span></div></a>
+  <a href="{% url 'student_routine' %}"><span class="mi"><span class="material-symbols-rounded">calendar_month</span></span><div><b>Class & Exam Routine</b><span class="d">Class and exam schedules</span></div></a>
+  <a href="{% url 'student_fees' %}"><span class="mi"><span class="material-symbols-rounded">payments</span></span><div><b>My Fees</b><span class="d">Fee, paid amount, and outstanding balance</span></div></a>
+</div>
+{% endblock %}
