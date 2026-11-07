@@ -169,6 +169,8 @@ LOGIN_URL = 'login'
 
 # Inside settings.py (usually around line 28)
 
+# Inside settings.py
+
 ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
@@ -176,8 +178,16 @@ ALLOWED_HOSTS = [
     "student-attendance-management-system-using-django-l7t3vt0m5.vercel.app",
 ]
 
-# Paste this right below ALLOWED_HOSTS so login and attendance forms work without CSRF errors:
+# 1. Trust all Vercel preview and production URLs for POST forms (login, register, etc.)
 CSRF_TRUSTED_ORIGINS = [
     "https://*.vercel.app",
     "https://student-attendance-management-system-using-django-l7t3vt0m5.vercel.app",
 ]
+
+# 2. Tell Django that Vercel handles HTTPS so CSRF tokens match properly
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+# 3. Ensure cookies work smoothly across Vercel's serverless requests
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+CSRF_USE_SESSIONS = False
