@@ -47,16 +47,20 @@ Each role receives a dedicated dashboard and navigation relevant to its responsi
 - Login-protected portal pages.
 - Administrator views protected by an administrator access check.
 
+## Use Case Diagram
+<img width="2550" height="2079" alt="Student Attendance Management System - UML Use Case Diagram (A4 Printable)" src="https://github.com/user-attachments/assets/624196cf-8e91-46d1-aedc-9b2b661bbcf1" />
+
+
 ## How the System Works
 
-1. **Account access** — A user registers or signs in through the authentication interface.
-2. **Role resolution** — The application checks the authenticated account's role and directs the user to the corresponding dashboard.
-3. **Academic setup** — An administrator creates departments, courses, student and faculty profiles, and course assignments.
-4. **Class organization** — Course assignments are connected to class schedules and class/examination routines.
-5. **Attendance recording** — A teacher selects an assigned course and records each student's attendance for a date. The system stores the status, marker, date, and optional remarks.
-6. **Record integrity** — The attendance model enforces one attendance entry per student, course assignment, and date, preventing duplicate records for the same class/date combination.
-7. **Review and reporting** — Teachers review attendance reports, while students see their own attendance history. Administrators can review and manage attendance centrally.
-8. **Fee visibility** — Administrators maintain fee and paid-amount values; students can view their fee balance and payment status.
+1. **Account access** - A user registers or signs in through the authentication interface.
+2. **Role resolution** - The application checks the authenticated account's role and directs the user to the corresponding dashboard.
+3. **Academic setup** - An administrator creates departments, courses, student and faculty profiles, and course assignments.
+4. **Class organization** - Course assignments are connected to class schedules and class/examination routines.
+5. **Attendance recording** - A teacher selects an assigned course and records each student's attendance for a date. The system stores the status, marker, date, and optional remarks.
+6. **Record integrity** - The attendance model enforces one attendance entry per student, course assignment, and date, preventing duplicate records for the same class/date combination.
+7. **Review and reporting** - Teachers review attendance reports, while students see their own attendance history. Administrators can review and manage attendance centrally.
+8. **Fee visibility** - Administrators maintain fee and paid-amount values; students can view their fee balance and payment status.
 
 ## Technology Stack
 
@@ -102,16 +106,16 @@ Class Attendance management System/
 
 ### Main data models
 
-- `user` — Custom Django user with a role field.
-- `Department` — Academic department information.
-- `Course` — Course name, code, department, and credit value.
-- `faculties` — Faculty profile linked to a user and department.
-- `Student` — Student profile, student ID, department, and semester.
-- `CourseAssignment` — Connects a faculty member with a course, semester, and session.
-- `ClassSchedule` — Weekly schedule details for a course assignment.
-- `Attendance` — Student attendance status, date, teacher marker, and remarks.
-- `ClassRoutine` — Class and examination routine entries.
-- `Fee` — Semester fee, paid amount, due date, and calculated payment status.
+- `user` - Custom Django user with a role field.
+- `Department` - Academic department information.
+- `Course` - Course name, code, department, and credit value.
+- `faculties` - Faculty profile linked to a user and department.
+- `Student` - Student profile, student ID, department, and semester.
+- `CourseAssignment` - Connects a faculty member with a course, semester, and session.
+- `ClassSchedule` - Weekly schedule details for a course assignment.
+- `Attendance` - Student attendance status, date, teacher marker, and remarks.
+- `ClassRoutine` - Class and examination routine entries.
+- `Fee` - Semester fee, paid amount, due date, and calculated payment status.
 
 
 ## Future Improvements
